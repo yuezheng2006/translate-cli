@@ -1,0 +1,77 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+const chalk = require('chalk');
+const updateNotifier = require('update-notifier');
+const pkg = require('../package.json');
+const config = require('../lib/config');
+
+updateNotifier({ pkg }).notify();
+
+program
+  .version(pkg.version)
+  .option('-s, --say', 'Turn on the pronunciation')
+  .option('-S, --no-say', 'Turn off the pronunciation')
+  .action(args => {
+    const { say } = args;
+    const options = resolveOptions({ say });
+    return runTranslate(options);
+  })
+
+
+program
+  .command('config')
+  .description('Set the global options')
+  .option('-c, --color', 'Output with color')
+  .option('-C, --no-color', 'Output without color')
+  .option('-i, --iciba', 'Enable the iciba translation engine')
+  .option('-I, --no-iciba', 'Disable the iciba translation engine')
+  .option('-y, --youdao', 'Enable the youdao translation engine')
+  .option('-Y, --no-youdao', 'Disable the youdao translation engine')
+  .option('-s, --say', 'Turn on the pronunciation')
+  .option('-S, --no-say', 'Turn off the pronunciation')
+  .action(args => {
+    // hack
+    // If the input is "translate config", then translate the word config.
+    if (process.argv.length === 3) {
+      return runTranslate();
+    }
+    const { color, iciba, youdao, say } = args
+    const options = resolveOptions({ color, iciba, youdao, say });
+    return config.write(options);
+  });
+
+program.on('--help', function () {
+  console.log('');
+  console.log(chalk.gray('Examples:'));
+  console.log(chalk.cyan('  $ ') + 'translate word');
+  console.log(chalk.cyan('  $ ') + 'translate world peace');
+  console.log(chalk.cyan('  $ ') + 'translate chinglish');
+  console.log('');
+});
+
+program.parse(process.argv);
+
+if (!process.argv.slice(2).length) {
+  program.outputHelp();
+}
+
+async function runTranslate(options = {}) {
+  const defaultOptions = await config.load();
+  const mergedOptions = { ...defaultOptions, ...options }
+  const translate = require('..');
+  translate(program.args.join(' '), mergedOptions)
+}
+
+function resolveOptions(options) {
+  const opts = {}
+  Object.keys(options)
+    .filter(key => isBoolean(options[key]))
+    .map(key => opts[key] = options[key]);
+
+  return opts;
+}
+
+function isBoolean(val) {
+  return typeof val === 'boolean';
+}

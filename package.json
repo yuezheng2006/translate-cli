@@ -1,0 +1,70 @@
+{
+  "name": "@yuezheng2006/translate",
+  "version": "1.0.0",
+  "description": "A translate tool in your command line",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "yuezheng2006@126.com",
+  "license": "MIT",
+  "bin": {
+    "trans": "bin/translate",
+    "translate": "bin/translate"
+  },
+  "keywords": [
+    "translate",
+    "iciba",
+    "youdao",
+    "terminal",
+    "chinese",
+    "command line",
+    "cli",
+    "translation",
+    "translate"
+  ],
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "readmeFilename": "README.md",
+  "files": [
+    "index.js",
+    "bin",
+    "lib"
+  ],
+  "dependencies": {
+    "chalk": "^4.0.0",
+    "commander": "^5.0.0",
+    "html-entities": "^1.1.2",
+    "is-chinese": "^1.2.5",
+    "ora": "^4.0.2",
+    "request": "^2.81.0",
+    "say": "^0.16.0",
+    "update-notifier": "^4.1.0",
+    "xml2js": "^0.4.8"
+  },
+  "optionalDependencies": {
+    "say": "^0.16.0"
+  },
+  "devDependencies": {
+    "coffee": "^5.1.0",
+    "husky": "^4.2.3",
+    "mocha": "^7.1.1",
+    "nock": "^12.0.3",
+    "np": "^6.2.0",
+    "prettier": "^2.0.2",
+    "pretty-quick": "^2.0.0",
+    "sinon": "^9.0.1"
+  },
+  "scripts": {
+    "format": "prettier --write '**/*.{json,js,md,yml}'",
+    "pretty-quick": "pretty-quick",
+    "test": "mocha tests/index.js --timeout 0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  }
+}
